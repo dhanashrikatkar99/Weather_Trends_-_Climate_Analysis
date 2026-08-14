@@ -1724,7 +1724,7 @@ st.set_page_config(
 # ============================================================
 
 weather = pd.read_csv(
-    r"D:\My_Projects\Python_Projects\Indian Weather Data Analysis\Dataset\Indian_Weather_Consolidated.zip"
+    r"Dataset\Indian_Weather_Consolidated.zip"
 )
 
 
