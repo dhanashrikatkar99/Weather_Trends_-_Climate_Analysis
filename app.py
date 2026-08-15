@@ -3658,145 +3658,143 @@ else:
 
     # ========================================================
     # # ========================================================
-    # 1. TEMPERATURE COMPARISON BY CITY
+    # 1. MAXIMUM WIND SPEED & GUST BY CITY
     # ========================================================
-
-    st.header("1. Temperature Comparison by City")
-
-    # Make sure year and temperature columns are numeric
-    weather["year"] = pd.to_numeric(
-        weather["year"],
-        errors="coerce"
-    )
-
-    for col in ["tempC", "mintempC", "maxtempC"]:
-        weather[col] = pd.to_numeric(
-            weather[col],
-            errors="coerce"
-        )
-
-    # Filter required period
-    temp_data = weather[
-        weather["year"].between(2009, 2019)
-    ].copy()
-
-    # Remove rows where required values are missing
-    temp_data = temp_data.dropna(
-        subset=[
-            "city",
-            "tempC",
-            "mintempC",
-            "maxtempC"
-        ]
-    )
-
-    # City-level KPIs
-    city_temp = (
-        temp_data
-        .groupby("city", as_index=False)
+    
+    st.header("1. Maximum Wind Speed and Gust by City")
+    
+    # --------------------------------------------------------
+    # Calculate exactly as in your Python analysis
+    # --------------------------------------------------------
+    
+    city_wind = (
+        weather
+        .groupby("city")
         .agg(
-            Avg_Temp=("tempC", "mean"),
-            Min_Temp=("mintempC", "min"),
-            Max_Temp=("maxtempC", "max")
+            Max_WindSpeed=("windspeedKmph", "max"),
+            Max_WindGust=("WindGustKmph", "max")
         )
+        .sort_values(
+            "Max_WindSpeed",
+            ascending=False
+        )
+        .reset_index()
     )
-
-    # Sort by average temperature
-    city_temp = city_temp.sort_values(
-        "Avg_Temp",
-        ascending=False
-    )
-
+    
+    # --------------------------------------------------------
     # Convert to long format for Plotly
-    temp_long = city_temp.melt(
+    # --------------------------------------------------------
+    
+    wind_plot = city_wind.melt(
         id_vars="city",
         value_vars=[
-            "Min_Temp",
-            "Avg_Temp",
-            "Max_Temp"
+            "Max_WindSpeed",
+            "Max_WindGust"
         ],
-        var_name="Temperature Type",
-        value_name="Temperature"
+        var_name="Wind Measure",
+        value_name="Wind Speed (km/h)"
     )
-
+    
     # Rename labels
-    temp_long["Temperature Type"] = temp_long[
-        "Temperature Type"
+    wind_plot["Wind Measure"] = wind_plot[
+        "Wind Measure"
     ].replace({
-        "Min_Temp": "Minimum Temperature",
-        "Avg_Temp": "Average Temperature",
-        "Max_Temp": "Maximum Temperature"
+        "Max_WindSpeed": "Maximum Wind Speed",
+        "Max_WindGust": "Maximum Wind Gust"
     })
-
-    # Plot
+    
+    # --------------------------------------------------------
+    # Plotly chart
+    # --------------------------------------------------------
+    
     fig = px.bar(
-        temp_long,
+        wind_plot,
         x="city",
-        y="Temperature",
-        color="Temperature Type",
+        y="Wind Speed (km/h)",
+        color="Wind Measure",
         barmode="group",
-        title="Temperature Comparison by City (2009–2019)",
+    
+        title="Maximum Wind Speed and Gust by City (2009–2019)",
+    
         labels={
             "city": "City",
-            "Temperature": "Temperature (°C)",
-            "Temperature Type": "Temperature Measure"
+            "Wind Speed (km/h)": "Wind Speed (km/h)",
+            "Wind Measure": "Wind Measure"
         },
+    
         hover_data={
             "city": True,
-            "Temperature Type": True,
-            "Temperature": ":.2f"
+            "Wind Measure": True,
+            "Wind Speed (km/h)": ":.0f"
         }
     )
-
-    fig.update_traces(
-        hovertemplate=
-        "<b>City:</b> %{x}<br>"
-        "<b>%{fullData.name}:</b> %{y:.2f} °C"
-        "<extra></extra>"
-    )
-
+    
+    # --------------------------------------------------------
+    # Chart formatting
+    # --------------------------------------------------------
+    
     fig.update_layout(
-        xaxis_tickangle=-45,
-        hovermode="x",
-        height=550
+        height=550,
+    
+        xaxis=dict(
+            title="City",
+            categoryorder="array",
+            categoryarray=city_wind["city"].tolist(),
+            tickangle=-45
+        ),
+    
+        yaxis=dict(
+            title="Wind Speed (km/h)",
+            rangemode="tozero"
+        ),
+    
+        hovermode="x unified",
+    
+        legend=dict(
+            title="Wind Measure"
+        )
     )
-
+    
+    # --------------------------------------------------------
+    # Display
+    # --------------------------------------------------------
+    
     st.plotly_chart(
         fig,
         use_container_width=True
     )
-
-    # -----------------------------
-    # Key insights
-    # -----------------------------
-
-    highest_avg_city = city_temp.loc[
-        city_temp["Avg_Temp"].idxmax()
+    
+    # ========================================================
+    # KEY INSIGHTS
+    # ========================================================
+    
+    highest_wind_speed_city = city_wind.loc[
+        city_wind["Max_WindSpeed"].idxmax()
     ]
-
-    lowest_avg_city = city_temp.loc[
-        city_temp["Avg_Temp"].idxmin()
+    
+    highest_wind_gust_city = city_wind.loc[
+        city_wind["Max_WindGust"].idxmax()
     ]
-
-    highest_extreme_city = city_temp.loc[
-        city_temp["Max_Temp"].idxmax()
+    
+    lowest_wind_speed_city = city_wind.loc[
+        city_wind["Max_WindSpeed"].idxmin()
     ]
-
+    
     st.info(
         f"""
         **Key Insights**
-
-        • **{highest_avg_city['city']}** has the highest average temperature
-        at approximately **{highest_avg_city['Avg_Temp']:.2f}°C**.
-
-        • **{lowest_avg_city['city']}** has the lowest average temperature
-        at approximately **{lowest_avg_city['Avg_Temp']:.2f}°C**.
-
-        • **{highest_extreme_city['city']}** records the highest extreme
-        temperature at approximately **{highest_extreme_city['Max_Temp']:.0f}°C**.
-
-        • Average temperature and extreme temperature represent different
-        KPIs and should therefore be interpreted separately.
+    
+        • **{highest_wind_gust_city['city']}** recorded the highest
+        maximum wind gust at **{highest_wind_gust_city['Max_WindGust']:.0f} km/h**.
+    
+        • **{highest_wind_speed_city['city']}** recorded the highest
+        maximum wind speed at **{highest_wind_speed_city['Max_WindSpeed']:.0f} km/h**.
+    
+        • **{lowest_wind_speed_city['city']}** recorded the lowest
+        maximum wind speed at **{lowest_wind_speed_city['Max_WindSpeed']:.0f} km/h**.
+    
+        • Maximum wind speed and maximum wind gust are different KPIs,
+        so both are useful for identifying extreme wind conditions.
         """
     )
     # ========================================================
