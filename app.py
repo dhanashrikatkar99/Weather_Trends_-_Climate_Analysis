@@ -155,7 +155,7 @@ selected_page = st.sidebar.radio(
     [
         "Temperature & Heat",
         "UV, Sunshine & Rainfall",
-        "Wind, Visibility & Relationships"
+        "Wind, Visibility & Relationships",
         "Temperature Prediction"
     ]
 )
