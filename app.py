@@ -1971,7 +1971,7 @@ elif selected_page == "UV, Sunshine & Rainfall":
 # WIND, VISIBILITY & RELATIONSHIPS
 # ============================================================
 
-elif page == "Wind, Visibility & Relationships":
+elif selected_page == "Wind, Visibility & Relationships":
 
     st.title(
         "💨 Wind, Visibility & Relationships"
@@ -3105,7 +3105,7 @@ elif page == "Wind, Visibility & Relationships":
 # PAGE 4 — TEMPERATURE PREDICTION
 # ============================================================
 
-elif page == "Temperature Prediction":
+elif selected_page == "Temperature Prediction":
 
     st.title("🌡️ Temperature Prediction")
 
