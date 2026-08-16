@@ -15,10 +15,9 @@ import os
 # RANDOM FOREST MODEL
 # ============================================================
 
-MODEL_PATH = "final_tuned_random_forest_weather.pkl"
+MODEL_PATH = "random_forest_model_compressed.joblib"
 
-MODEL_URL = "https://huggingface.co/DhanashriKatkar/weather-temperature-random-forest/blob/main/final_tuned_random_forest_weather.pkl"
-
+MODEL_URL = "https://huggingface.co/DhanashriKatkar/weather-temperature-random-forest/resolve/main/random_forest_model_compressed.joblib"
 
 # Download model if it is not already available locally
 if not os.path.exists(MODEL_PATH):
