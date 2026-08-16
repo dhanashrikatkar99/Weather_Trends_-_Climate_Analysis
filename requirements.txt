@@ -3,3 +3,6 @@ pandas
 numpy
 plotly
 matplotlib
+joblib
+requests
+scikit-learn
