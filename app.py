@@ -38,7 +38,7 @@ if not os.path.exists(MODEL_PATH):
 def load_model():
     return joblib.load(MODEL_PATH)
 
-rf_model = load_model()
+# rf_model = load_model()
 
 print("Random Forest model loaded successfully.")
 
@@ -3118,7 +3118,7 @@ elif selected_page == "Wind, Visibility & Relationships":
 # ============================================================
 
 elif selected_page == "Temperature Prediction":
-
+    rf_model = load_model()
     st.title("🌡️ Temperature Prediction")
 
     st.markdown(
