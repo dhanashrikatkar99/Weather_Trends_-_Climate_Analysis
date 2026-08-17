@@ -22,7 +22,7 @@ The analysis focuses on:
 
 ---
 ## Web-Link
-https://dhanashrikatkar99-weather-trends---climate-analysis-app-id5ecw.streamlit.app/
+https://dhanashrikatkar99-weather-trends---climate-analysis-app-ehn8us.streamlit.app/
 ---
 
 ## 🏙️ Cities Analyzed
