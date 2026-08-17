@@ -33,7 +33,12 @@ if not os.path.exists(MODEL_PATH):
 
 
 # Load model
-rf_model = joblib.load(MODEL_PATH)
+# rf_model = joblib.load(MODEL_PATH)
+@st.cache_resource
+def load_model():
+    return joblib.load(MODEL_PATH)
+
+rf_model = load_model()
 
 print("Random Forest model loaded successfully.")
 
@@ -52,9 +57,16 @@ st.set_page_config(
 # LOAD DATA
 # ============================================================
 
-weather = pd.read_csv(
-    r"Dataset//Indian_Weather_Consolidated.zip"
-)
+# weather = pd.read_csv(
+#     r"Dataset//Indian_Weather_Consolidated.zip"
+# )
+@st.cache_data
+def load_weather_data():
+    return pd.read_csv(
+        "Dataset/Indian_Weather_Consolidated.zip"
+    )
+
+weather = load_weather_data()
 
 
 # ============================================================
